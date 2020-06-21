@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmdWrapper", "CmdWrapper\Cm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmdWrapperTest", "CmdWrapperTest\CmdWrapperTest.csproj", "{53E0C913-766D-437F-9723-4ED6C62D4BEF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dummy", "Dummy\Dummy.csproj", "{54E16040-ED68-46CC-B5B0-FA37C7F29E74}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,5 +46,17 @@ Global
 		{53E0C913-766D-437F-9723-4ED6C62D4BEF}.Release|x64.Build.0 = Release|Any CPU
 		{53E0C913-766D-437F-9723-4ED6C62D4BEF}.Release|x86.ActiveCfg = Release|Any CPU
 		{53E0C913-766D-437F-9723-4ED6C62D4BEF}.Release|x86.Build.0 = Release|Any CPU
+		{54E16040-ED68-46CC-B5B0-FA37C7F29E74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54E16040-ED68-46CC-B5B0-FA37C7F29E74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54E16040-ED68-46CC-B5B0-FA37C7F29E74}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{54E16040-ED68-46CC-B5B0-FA37C7F29E74}.Debug|x64.Build.0 = Debug|Any CPU
+		{54E16040-ED68-46CC-B5B0-FA37C7F29E74}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{54E16040-ED68-46CC-B5B0-FA37C7F29E74}.Debug|x86.Build.0 = Debug|Any CPU
+		{54E16040-ED68-46CC-B5B0-FA37C7F29E74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54E16040-ED68-46CC-B5B0-FA37C7F29E74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54E16040-ED68-46CC-B5B0-FA37C7F29E74}.Release|x64.ActiveCfg = Release|Any CPU
+		{54E16040-ED68-46CC-B5B0-FA37C7F29E74}.Release|x64.Build.0 = Release|Any CPU
+		{54E16040-ED68-46CC-B5B0-FA37C7F29E74}.Release|x86.ActiveCfg = Release|Any CPU
+		{54E16040-ED68-46CC-B5B0-FA37C7F29E74}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
