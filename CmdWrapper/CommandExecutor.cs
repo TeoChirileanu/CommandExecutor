@@ -13,6 +13,7 @@ namespace CmdWrapper
                 Arguments = "/c ",
                 
                 RedirectStandardOutput = true,
+                RedirectStandardError = true,
                 UseShellExecute = false,
             }
         };
