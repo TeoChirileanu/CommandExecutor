@@ -4,24 +4,29 @@ namespace CmdWrapper
 {
     public class CommandExecutor : ICommandExecutor
     {
+        private readonly Process _process = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = "cmd",
+                Arguments = "/c ",
+                
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+            }
+        };
         public string ExecuteCommand(string command)
         {
-            using var process = new Process
-            {
-                StartInfo =
-                {
-                    FileName = @"C:\Windows\System32\cmd.exe",
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = false,
-                    ErrorDialog = false
-                }
-            };
-            process.StartInfo.Arguments = $"/c {command}";
-            process.Start();
-            var result = process.StandardOutput.ReadToEnd().Trim();
-            process.Close();
-            return result;
+            _process.StartInfo.Arguments += command;
+            _process.Start();
+            _process.WaitForExit();
+            return _process.StandardOutput.ReadToEnd().Trim();
+        }
+
+        public void Dispose()
+        {
+            _process?.Close();
+            _process?.Dispose();
         }
     }
 }

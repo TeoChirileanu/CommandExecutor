@@ -12,7 +12,7 @@ namespace CmdWrapperTest
         {
             // Arrange
             const string command = "echo hello";
-            ICommandExecutor executor = new CommandExecutor();
+            using ICommandExecutor executor = new CommandExecutor();
 
             // Act
             var result = executor.ExecuteCommand(command);

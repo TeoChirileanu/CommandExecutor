@@ -1,6 +1,8 @@
-﻿namespace CmdWrapper
+﻿using System;
+
+namespace CmdWrapper
 {
-    public interface ICommandExecutor
+    public interface ICommandExecutor : IDisposable
     {
         string ExecuteCommand(string command);
     }
