@@ -2,7 +2,6 @@
 {
     public interface ICommandExecutor
     {
-        void ExecuteCommand(string command);
-        string GetExecutionResult();
+        string ExecuteCommand(string command);
     }
 }

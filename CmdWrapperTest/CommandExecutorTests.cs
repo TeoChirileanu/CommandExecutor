@@ -8,18 +8,17 @@ namespace CmdWrapperTest
     public class CommandExecutorTests
     {
         [TestMethod]
-        public void TestMethod1()
+        public void ShouldExecuteCommand()
         {
             // Arrange
-            const string commandAsString = "sc start dummy";
+            const string command = "echo hello";
             ICommandExecutor executor = new CommandExecutor();
 
             // Act
-            executor.ExecuteCommand(commandAsString);
+            var result = executor.ExecuteCommand(command);
 
             // Assert
-            var output = executor.GetExecutionResult();
-            Check.That(output).IsNotNull();
+            Check.That(result).IsEqualTo("hello");
         }
     }
 }
