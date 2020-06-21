@@ -10,11 +10,14 @@ namespace CmdWrapper
             StartInfo = new ProcessStartInfo
             {
                 FileName = "cmd",
-                Arguments = "/c ",
-                
+                Arguments = "/c ", // run command then terminate
+                UseShellExecute = false,
+                // disable all interaction with the outside world
+                RedirectStandardInput = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                UseShellExecute = false,
+                CreateNoWindow = true,
+                ErrorDialog = false
             }
         };
         public async Task<string> ExecuteCommand(string command)
