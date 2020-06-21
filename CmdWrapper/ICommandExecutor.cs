@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace CmdWrapper
 {
     public interface ICommandExecutor : IDisposable
     {
-        string ExecuteCommand(string command);
+        Task<string> ExecuteCommand(string command);
     }
 }

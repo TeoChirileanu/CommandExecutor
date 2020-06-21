@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace CmdWrapper
 {
@@ -15,12 +16,15 @@ namespace CmdWrapper
                 UseShellExecute = false,
             }
         };
-        public string ExecuteCommand(string command)
+        public async Task<string> ExecuteCommand(string command)
         {
             _process.StartInfo.Arguments += command;
+            
             _process.Start();
             _process.WaitForExit();
-            return _process.StandardOutput.ReadToEnd().Trim();
+            
+            var result = await _process.StandardOutput.ReadToEndAsync();
+            return result.Trim();
         }
 
         public void Dispose()
