@@ -5,30 +5,20 @@ namespace CmdWrapper
 {
     public static class StaticCommandExecutor
     {
-        private static readonly ProcessStartInfo StartInfo = new ProcessStartInfo
-        {
-            FileName = "cmd",
-            Arguments = $"/c ",
-            UseShellExecute = false,
-            RedirectStandardInput = true,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            CreateNoWindow = true,
-            ErrorDialog = false
-        };
-
         public static string ExecuteCommand(string command)
         {
-            StartInfo.Arguments += command;
-            try
+            var startInfo = new ProcessStartInfo
             {
-                using var process = Process.Start(StartInfo);
-                return process?.StandardOutput.ReadToEnd().Trim();
-            }
-            catch (Exception e)
-            {
-                return e.ToString();
-            }
+                FileName = "cmd",
+                Arguments = $"/c {command}",
+                UseShellExecute = false,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true,
+                ErrorDialog = false
+            };
+            return Process.Start(startInfo)?.StandardOutput.ReadToEnd().Trim();
         }
     }
 }

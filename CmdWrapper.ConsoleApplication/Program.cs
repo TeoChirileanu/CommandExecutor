@@ -1,16 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Threading;
 
 namespace CmdWrapper.ConsoleApplication
 {
     internal static class Program
     {
-        private static void Main()
-        {
-            Run();
-        }
+        private static void Main() => Run();
 
         private static void Run()
         {
@@ -22,29 +20,48 @@ namespace CmdWrapper.ConsoleApplication
 
             var disposable = Observable.FromEventPattern(watcher, nameof(watcher.Created))
                 .Select(data => ((FileSystemEventArgs) data.EventArgs).FullPath)
-                .Do(file => Console.WriteLine($"Saw file {file} "))
-                .Select(File.ReadAllText)
-                .Where(content => !string.IsNullOrWhiteSpace(content))
-                .Do(command => Console.WriteLine($"Executing {command}"))
-                .Select(command => Observable.Return(StaticCommandExecutor.ExecuteCommand(command)))
+                .Select(GetContentFromFile)
                 .Switch()
-                .Subscribe(result => Console.WriteLine($"Result is {result}"));
+                .Where(content => !string.IsNullOrWhiteSpace(content))
+                .Do(command => Console.WriteLine($">{command}"))
+                .Select(ExecuteCommandAndGetResult)
+                .Switch()
+                .Subscribe(Console.WriteLine, ex => Console.WriteLine($"Got an error: {ex}"));
 
-            Observable.FromEventPattern(watcher, nameof(watcher.Error))
-                .Select(data => ((ErrorEventArgs) data.EventArgs).GetException())
-                .Subscribe(ex => Console.WriteLine($"Got error: {ex}"));
-
-            watcher.EnableRaisingEvents = true;
             Console.WriteLine($"\nStart watching {tempDir}\n");
-            
+            watcher.EnableRaisingEvents = true;
+
             var tempFile = Path.Combine(tempDir, Path.GetRandomFileName());
-            File.WriteAllText(tempFile, "hostname");
-            
-            Thread.Sleep(TimeSpan.FromMilliseconds(100));
+            File.WriteAllText(tempFile, "ping localhost");
+
+            Console.ReadKey();
 
             Console.WriteLine($"Stop watching {tempDir}");
             disposable.Dispose();
             watcher.Dispose();
+        }
+
+        private static BehaviorSubject<string> ExecuteCommandAndGetResult(string command)
+        {
+            var subject = new BehaviorSubject<string>(string.Empty);
+            try
+            {
+                subject.OnNext(StaticCommandExecutor.ExecuteCommand(command));
+            }
+            catch (Exception e)
+            {
+                subject.OnError(e);
+            }
+
+            return subject;
+        }
+
+        private static BehaviorSubject<string> GetContentFromFile(string file)
+        {
+            var subject = new BehaviorSubject<string>(string.Empty);
+            try { subject.OnNext(File.ReadAllText(file)); }
+            catch (Exception e) { subject.OnError(e); }
+            return subject;
         }
     }
 }
