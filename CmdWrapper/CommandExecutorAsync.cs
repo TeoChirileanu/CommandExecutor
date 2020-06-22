@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace CmdWrapper
 {
-    public class CommandExecutor : ICommandExecutor
+    public class CommandExecutorAsync : ICommandExecutorAsync
     {
         private readonly Process _process = new Process
         {
@@ -20,14 +20,14 @@ namespace CmdWrapper
                 ErrorDialog = false
             }
         };
-        public string ExecuteCommand(string command)
+        public async Task<string> ExecuteCommand(string command)
         {
             _process.StartInfo.Arguments += command;
             
             _process.Start();
             _process.WaitForExit();
             
-            var result = _process.StandardOutput.ReadToEnd();
+            var result = await _process.StandardOutput.ReadToEndAsync();
             return result.Trim();
         }
 

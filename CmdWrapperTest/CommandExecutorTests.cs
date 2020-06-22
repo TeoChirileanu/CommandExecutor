@@ -16,10 +16,10 @@ namespace CmdWrapperTest
             // Arrange
             const string greeting = "hello";
             const string command = "echo " + greeting;
-            using ICommandExecutor executor = new CommandExecutor();
+            using ICommandExecutorAsync executorAsync = new CommandExecutorAsync();
 
             // Act
-            var result = await executor.ExecuteCommand(command);
+            var result = await executorAsync.ExecuteCommand(command);
 
             // Assert
             Check.That(result).IsEqualTo(greeting);
@@ -30,10 +30,10 @@ namespace CmdWrapperTest
         {
             // Arrange
             const string command = "ping localhost";
-            using ICommandExecutor executor = new CommandExecutor();
+            using ICommandExecutorAsync executorAsync = new CommandExecutorAsync();
 
             // Act
-            var result = await executor.ExecuteCommand(command);
+            var result = await executorAsync.ExecuteCommand(command);
 
             // Assert
             Check.That(result).Contains("Pinging", "Reply");
@@ -44,10 +44,10 @@ namespace CmdWrapperTest
         {
             // Arrange
             const string command = "sc stop dummy"; // warning: install it first
-            using ICommandExecutor executor = new CommandExecutor();
+            using ICommandExecutorAsync executorAsync = new CommandExecutorAsync();
 
             // Act
-            var result = await executor.ExecuteCommand(command);
+            var result = await executorAsync.ExecuteCommand(command);
 
             // Assert
             Check.That(result).IsNotEmpty();
@@ -60,10 +60,10 @@ namespace CmdWrapperTest
             const string file = "foo.bat";
             if (File.Exists(file)) File.Delete(file);
             await File.WriteAllTextAsync(file, "hostname");
-            using ICommandExecutor executor = new CommandExecutor();
+            using ICommandExecutorAsync executorAsync = new CommandExecutorAsync();
 
             // Act
-            var result = await executor.ExecuteCommand(file);
+            var result = await executorAsync.ExecuteCommand(file);
 
             // Assert
             Check.That(result.Contains(Environment.MachineName, StringComparison.InvariantCultureIgnoreCase)).IsTrue();
@@ -77,10 +77,10 @@ namespace CmdWrapperTest
             const string file = "bar.bat";
             if (File.Exists(file)) File.Delete(file);
             await File.WriteAllLinesAsync(file, new []{"ping localhost", "hostname", "echo hello"});
-            using ICommandExecutor executor = new CommandExecutor();
+            using ICommandExecutorAsync executorAsync = new CommandExecutorAsync();
 
             // Act
-            var result = await executor.ExecuteCommand(file);
+            var result = await executorAsync.ExecuteCommand(file);
 
             // Assert
             Check.That(result).Contains("Pinging", "Reply", Environment.MachineName.ToLower(), "hello");
