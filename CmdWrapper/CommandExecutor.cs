@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
-using System.Threading.Tasks;
+﻿using System;
+using System.Diagnostics;
 
 namespace CmdWrapper
 {
@@ -23,11 +23,21 @@ namespace CmdWrapper
         public string ExecuteCommand(string command)
         {
             _process.StartInfo.Arguments += command;
+
+            string result;
+            try
+            {
+                _process.Start();
+                _process.WaitForExit();
+                result = _process.StandardOutput.ReadToEnd();
+            }
+            catch (Exception e)
+            {
+                var errorMessage = $"Got an error: {e}";
+                Console.WriteLine(errorMessage);
+                return errorMessage;
+            }
             
-            _process.Start();
-            _process.WaitForExit();
-            
-            var result = _process.StandardOutput.ReadToEnd();
             return result.Trim();
         }
 

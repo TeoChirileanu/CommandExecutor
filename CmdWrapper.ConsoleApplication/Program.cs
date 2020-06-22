@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reactive.Linq;
+using System.Threading;
 
 namespace CmdWrapper.ConsoleApplication
 {
@@ -19,7 +20,7 @@ namespace CmdWrapper.ConsoleApplication
             var watcher = new FileSystemWatcher(tempDir);
             ICommandExecutor commandExecutor = new CommandExecutor();
 
-            Observable.FromEventPattern(watcher, nameof(watcher.Created))
+            var foo = Observable.FromEventPattern(watcher, nameof(watcher.Created))
                 .Select(data => ((FileSystemEventArgs) data.EventArgs).FullPath)
                 .Do(file => Console.WriteLine($"Saw file {file} "))
                 .Select(File.ReadAllText)
@@ -31,14 +32,18 @@ namespace CmdWrapper.ConsoleApplication
                     ex => Console.WriteLine($"Got an exception: {ex}"),
                     () => Console.WriteLine($"Stopped watching {tempDir}"));
 
+            Observable.FromEventPattern(watcher, nameof(watcher.Error))
+                .Select(data => ((ErrorEventArgs) data.EventArgs).GetException())
+                .Subscribe(ex => Console.WriteLine($"Got error: {ex}"));
+
             watcher.EnableRaisingEvents = true;
             Console.WriteLine($"\nStart watching {tempDir}\n");
             
             var tempFile = Path.Combine(tempDir, Path.GetRandomFileName());
-            var randomContent = Path.GetFileNameWithoutExtension(Path.GetRandomFileName());
             File.WriteAllText(tempFile, "hostname");
 
             watcher.Dispose();
+            Thread.Sleep(TimeSpan.FromSeconds(1));
             if (Directory.Exists(tempDir)) Directory.Delete(tempDir, true);
         }
     }
