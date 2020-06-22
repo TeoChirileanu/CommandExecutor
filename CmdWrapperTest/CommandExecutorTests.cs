@@ -40,6 +40,20 @@ namespace CmdWrapperTest
         }
 
         [TestMethod]
+        public async Task ShouldExecuteAdminCommand()
+        {
+            // Arrange
+            const string command = "sc stop dummy"; // warning: install it first
+            using ICommandExecutor executor = new CommandExecutor();
+
+            // Act
+            var result = await executor.ExecuteCommand(command);
+
+            // Assert
+            Check.That(result).IsNotEmpty();
+        }
+
+        [TestMethod]
         public async Task ShouldExecuteSingleCommandInsideFile()
         {
             // Arrange

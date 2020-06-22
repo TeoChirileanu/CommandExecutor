@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmdWrapperTest", "CmdWrappe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dummy", "Dummy\Dummy.csproj", "{54E16040-ED68-46CC-B5B0-FA37C7F29E74}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmdWrapper.ConsoleApplication", "CmdWrapper.ConsoleApplication\CmdWrapper.ConsoleApplication.csproj", "{10440CE5-95D0-4295-8C79-FF10DBC19143}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,5 +60,17 @@ Global
 		{54E16040-ED68-46CC-B5B0-FA37C7F29E74}.Release|x64.Build.0 = Release|Any CPU
 		{54E16040-ED68-46CC-B5B0-FA37C7F29E74}.Release|x86.ActiveCfg = Release|Any CPU
 		{54E16040-ED68-46CC-B5B0-FA37C7F29E74}.Release|x86.Build.0 = Release|Any CPU
+		{10440CE5-95D0-4295-8C79-FF10DBC19143}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10440CE5-95D0-4295-8C79-FF10DBC19143}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10440CE5-95D0-4295-8C79-FF10DBC19143}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{10440CE5-95D0-4295-8C79-FF10DBC19143}.Debug|x64.Build.0 = Debug|Any CPU
+		{10440CE5-95D0-4295-8C79-FF10DBC19143}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{10440CE5-95D0-4295-8C79-FF10DBC19143}.Debug|x86.Build.0 = Debug|Any CPU
+		{10440CE5-95D0-4295-8C79-FF10DBC19143}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10440CE5-95D0-4295-8C79-FF10DBC19143}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10440CE5-95D0-4295-8C79-FF10DBC19143}.Release|x64.ActiveCfg = Release|Any CPU
+		{10440CE5-95D0-4295-8C79-FF10DBC19143}.Release|x64.Build.0 = Release|Any CPU
+		{10440CE5-95D0-4295-8C79-FF10DBC19143}.Release|x86.ActiveCfg = Release|Any CPU
+		{10440CE5-95D0-4295-8C79-FF10DBC19143}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
