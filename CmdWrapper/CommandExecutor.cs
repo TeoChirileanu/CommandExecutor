@@ -24,21 +24,16 @@ namespace CmdWrapper
         {
             _process.StartInfo.Arguments += command;
 
-            string result;
             try
             {
                 _process.Start();
                 _process.WaitForExit();
-                result = _process.StandardOutput.ReadToEnd();
+                return _process.StandardOutput.ReadToEnd().Trim();
             }
             catch (Exception e)
             {
-                var errorMessage = $"Got an error: {e}";
-                Console.WriteLine(errorMessage);
-                return errorMessage;
+                return $"Got an error: {e}";
             }
-            
-            return result.Trim();
         }
 
         public void Dispose()
