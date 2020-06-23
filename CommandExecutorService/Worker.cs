@@ -16,18 +16,10 @@ namespace CommandExecutorService
         
         private readonly ILogger<Worker> _logger;
 
-        public Worker(ILogger<Worker> logger) => _logger = logger;
-
-        public override async Task StartAsync(CancellationToken cancellationToken)
+        public Worker(ILogger<Worker> logger)
         {
-            _logger.LogInformation($"Service started");
-            await Task.CompletedTask;
-        }
-
-        public override async Task StopAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation($"Service stopped");
-            await Task.CompletedTask;
+            _logger = logger;
+            _logger.LogInformation("Service started");
         }
 
         protected override async Task ExecuteAsync(CancellationToken token)
@@ -39,6 +31,8 @@ namespace CommandExecutorService
                 IDisposable observable = null;
                 try
                 {
+                    if (!Directory.Exists(FolderToWatch)) Directory.CreateDirectory(FolderToWatch);
+                    
                     watcher.Path = FolderToWatch;
                     watcher.Filter = FileToWatch;
                     watcher.EnableRaisingEvents = true;
@@ -54,7 +48,6 @@ namespace CommandExecutorService
                         .Switch()
                         .Subscribe(executionResult => _logger.LogInformation(executionResult));
 
-                    // for convenience, create the file to write commands in
                     await File.WriteAllTextAsync(FileToWatch, string.Empty, token);
                     // watch incoming files raising errors as necessary
                     await Task.Delay(TimeSpan.FromMinutes(1), token);
