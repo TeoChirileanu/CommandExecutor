@@ -18,6 +18,18 @@ namespace CommandExecutorService
 
         public Worker(ILogger<Worker> logger) => _logger = logger;
 
+        public override async Task StartAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation($"Service started");
+            await Task.CompletedTask;
+        }
+
+        public override async Task StopAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation($"Service stopped");
+            await Task.CompletedTask;
+        }
+
         protected override async Task ExecuteAsync(CancellationToken token)
         {
             _logger.LogInformation($"Watching {FolderToWatch} for {FileToWatch}");
@@ -30,7 +42,7 @@ namespace CommandExecutorService
                     watcher.Path = FolderToWatch;
                     watcher.Filter = FileToWatch;
                     watcher.EnableRaisingEvents = true;
-                    
+
                     observable = Observable.FromEventPattern(watcher, nameof(watcher.Changed))
                         .Sample(TimeSpan.FromSeconds(1))
                         .Select(data => ((FileSystemEventArgs) data.EventArgs).FullPath)
@@ -41,19 +53,27 @@ namespace CommandExecutorService
                         .Select(command => Observable.Return(ExecuteCommand(command)))
                         .Switch()
                         .Subscribe(executionResult => _logger.LogInformation(executionResult));
-                    
+
+                    // for convenience, create the file to write commands in
+                    await File.WriteAllTextAsync(FileToWatch, string.Empty, token);
                     // watch incoming files raising errors as necessary
-                    await Task.Delay(TimeSpan.FromMinutes(10), token);
+                    await Task.Delay(TimeSpan.FromMinutes(1), token);
                     // dispose after waiting so a new fresh start can be made
                     observable.Dispose();
                     watcher.Dispose();
                 }
-                catch (Exception e)
+                catch (TaskCanceledException)
                 {
-                    _logger.LogError(e, "Got an error, I'll restart after 10 seconds");
+                    await StopAsync(token);
                     observable?.Dispose();
                     watcher.Dispose();
-                    
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, $"Got an error : {e.Message}");
+                    observable?.Dispose();
+                    watcher.Dispose();
+
                     await Task.Delay(TimeSpan.FromSeconds(10), token);
                     await ExecuteAsync(token);
                 }

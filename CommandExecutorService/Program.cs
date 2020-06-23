@@ -24,7 +24,6 @@ namespace CommandExecutorService
             
             try
             {
-                Log.Information("Worker started");
                 CreateHostBuilder(args).Build().Run();
                 return 0;
             }
