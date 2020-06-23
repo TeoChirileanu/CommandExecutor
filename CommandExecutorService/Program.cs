@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 
-namespace CmdWrapper.Service
+namespace CommandExecutorService
 {
     public static class Program
     {

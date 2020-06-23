@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace CmdWrapper.Service
+namespace CommandExecutorService
 {
     public class Worker : BackgroundService
     {
@@ -20,6 +20,7 @@ namespace CmdWrapper.Service
 
         protected override async Task ExecuteAsync(CancellationToken token)
         {
+            _logger.LogInformation($"Watching {FolderToWatch} for {FileToWatch}");
             while (!token.IsCancellationRequested)
             {
                 var watcher = new FileSystemWatcher();
@@ -28,6 +29,7 @@ namespace CmdWrapper.Service
                 {
                     watcher.Path = FolderToWatch;
                     watcher.Filter = FileToWatch;
+                    watcher.EnableRaisingEvents = true;
                     
                     observable = Observable.FromEventPattern(watcher, nameof(watcher.Changed))
                         .Sample(TimeSpan.FromSeconds(1))
@@ -39,12 +41,9 @@ namespace CmdWrapper.Service
                         .Select(command => Observable.Return(ExecuteCommand(command)))
                         .Switch()
                         .Subscribe(executionResult => _logger.LogInformation(executionResult));
-
-                    watcher.EnableRaisingEvents = true;
-                    _logger.LogInformation($"Watching {FolderToWatch} for {FileToWatch}");
                     
                     // watch incoming files raising errors as necessary
-                    await Task.Delay(TimeSpan.FromSeconds(60), token);
+                    await Task.Delay(TimeSpan.FromMinutes(10), token);
                     // dispose after waiting so a new fresh start can be made
                     observable.Dispose();
                     watcher.Dispose();

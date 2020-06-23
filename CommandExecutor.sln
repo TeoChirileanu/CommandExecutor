@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dummy", "Dummy\Dummy.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmdWrapper.ConsoleApplication", "CmdWrapper.ConsoleApplication\CmdWrapper.ConsoleApplication.csproj", "{10440CE5-95D0-4295-8C79-FF10DBC19143}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmdWrapper.Service", "CmdWrapper.Service\CmdWrapper.Service.csproj", "{E130FF31-3A63-4088-A513-5900A2825606}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandExecutorService", "CommandExecutorService\CommandExecutorService.csproj", "{E130FF31-3A63-4088-A513-5900A2825606}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
