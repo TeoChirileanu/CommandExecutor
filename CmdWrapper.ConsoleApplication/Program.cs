@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
@@ -18,11 +19,12 @@ namespace CmdWrapper.ConsoleApplication
             
             var watcher = new FileSystemWatcher(tempDir);
 
-            var disposable = Observable.FromEventPattern(watcher, nameof(watcher.Created))
+            var disposable = Observable.FromEventPattern(watcher, nameof(watcher.Changed))
+                .Sample(TimeSpan.FromMilliseconds(500))
                 .Select(data => ((FileSystemEventArgs) data.EventArgs).FullPath)
                 .Select(GetContentFromFile)
                 .Switch()
-                .Where(content => !string.IsNullOrWhiteSpace(content))
+                .Where(command => !string.IsNullOrWhiteSpace(command))
                 .Do(command => Console.WriteLine($">{command}"))
                 .Select(ExecuteCommandAndGetResult)
                 .Switch()
@@ -32,8 +34,10 @@ namespace CmdWrapper.ConsoleApplication
             watcher.EnableRaisingEvents = true;
 
             var tempFile = Path.Combine(tempDir, Path.GetRandomFileName());
-            File.WriteAllText(tempFile, "ping localhost");
-
+            File.WriteAllText(tempFile, "echo hello");
+            Thread.Sleep(1000);
+            File.WriteAllText(tempFile, "hostname");
+            
             Console.ReadKey();
 
             Console.WriteLine($"Stop watching {tempDir}");
@@ -41,27 +45,20 @@ namespace CmdWrapper.ConsoleApplication
             watcher.Dispose();
         }
 
-        private static BehaviorSubject<string> ExecuteCommandAndGetResult(string command)
+        private static IObservable<string> ExecuteCommandAndGetResult(string command)
         {
             var subject = new BehaviorSubject<string>(string.Empty);
-            try
-            {
-                subject.OnNext(StaticCommandExecutor.ExecuteCommand(command));
-            }
-            catch (Exception e)
-            {
-                subject.OnError(e);
-            }
-
-            return subject;
+            try { subject.OnNext(StaticCommandExecutor.ExecuteCommand(command)); }
+            catch (Exception e) { subject.OnError(e); }
+            return subject.AsObservable();
         }
 
-        private static BehaviorSubject<string> GetContentFromFile(string file)
+        private static IObservable<string> GetContentFromFile(string file)
         {
             var subject = new BehaviorSubject<string>(string.Empty);
             try { subject.OnNext(File.ReadAllText(file)); }
             catch (Exception e) { subject.OnError(e); }
-            return subject;
+            return subject.AsObservable();
         }
     }
 }

@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dummy", "Dummy\Dummy.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmdWrapper.ConsoleApplication", "CmdWrapper.ConsoleApplication\CmdWrapper.ConsoleApplication.csproj", "{10440CE5-95D0-4295-8C79-FF10DBC19143}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmdWrapper.Service", "CmdWrapper.Service\CmdWrapper.Service.csproj", "{E130FF31-3A63-4088-A513-5900A2825606}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,5 +74,17 @@ Global
 		{10440CE5-95D0-4295-8C79-FF10DBC19143}.Release|x64.Build.0 = Release|Any CPU
 		{10440CE5-95D0-4295-8C79-FF10DBC19143}.Release|x86.ActiveCfg = Release|Any CPU
 		{10440CE5-95D0-4295-8C79-FF10DBC19143}.Release|x86.Build.0 = Release|Any CPU
+		{E130FF31-3A63-4088-A513-5900A2825606}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E130FF31-3A63-4088-A513-5900A2825606}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E130FF31-3A63-4088-A513-5900A2825606}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E130FF31-3A63-4088-A513-5900A2825606}.Debug|x64.Build.0 = Debug|Any CPU
+		{E130FF31-3A63-4088-A513-5900A2825606}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E130FF31-3A63-4088-A513-5900A2825606}.Debug|x86.Build.0 = Debug|Any CPU
+		{E130FF31-3A63-4088-A513-5900A2825606}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E130FF31-3A63-4088-A513-5900A2825606}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E130FF31-3A63-4088-A513-5900A2825606}.Release|x64.ActiveCfg = Release|Any CPU
+		{E130FF31-3A63-4088-A513-5900A2825606}.Release|x64.Build.0 = Release|Any CPU
+		{E130FF31-3A63-4088-A513-5900A2825606}.Release|x86.ActiveCfg = Release|Any CPU
+		{E130FF31-3A63-4088-A513-5900A2825606}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
