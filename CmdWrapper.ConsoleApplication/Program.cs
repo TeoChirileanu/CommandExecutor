@@ -33,7 +33,7 @@ namespace CmdWrapper.ConsoleApplication
             watcher.EnableRaisingEvents = true;
 
             var tempFile = Path.Combine(tempDir, "command.txt");
-            File.WriteAllText(tempFile, "echo hello");
+            File.WriteAllText(tempFile, "echo foo");
             Thread.Sleep(1000);
             File.WriteAllText(tempFile, "hostname");
             Thread.Sleep(1000);

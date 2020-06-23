@@ -11,14 +11,27 @@ namespace CmdWrapper
             {
                 FileName = "cmd",
                 Arguments = $"/c {command}",
-                UseShellExecute = false,
+                
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
+
+                UseShellExecute = false,
                 CreateNoWindow = true,
                 ErrorDialog = false
             };
-            return Process.Start(startInfo)?.StandardOutput.ReadToEnd().Trim();
+
+            using var process = new Process {StartInfo = startInfo};
+            process.Start();
+            
+            var stdout = process.StandardOutput.ReadToEnd(); 
+            var stderr = process.StandardError.ReadToEnd();
+            var result = $"{stdout}\n{stderr}";
+
+            process.Kill(true);
+            process.Close();
+
+            return result;
         }
     }
 }
