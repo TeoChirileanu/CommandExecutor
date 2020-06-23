@@ -18,7 +18,10 @@ namespace CmdWrapper.Service
                 {
                     logging.AddConsole();
                     logging.AddDebug();
-                    logging.AddEventLog();
+                    logging.AddEventLog(settings =>
+                    {
+                        settings.SourceName = "CommandExecutor";
+                    });
                 })
                 .ConfigureServices((hostContext, services) =>
                 {

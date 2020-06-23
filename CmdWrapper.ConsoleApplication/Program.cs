@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
@@ -17,7 +16,7 @@ namespace CmdWrapper.ConsoleApplication
             if (Directory.Exists(tempDir)) Directory.Delete(tempDir, true);
             Directory.CreateDirectory(tempDir);
             
-            var watcher = new FileSystemWatcher(tempDir);
+            var watcher = new FileSystemWatcher(tempDir, "command.txt");
 
             var disposable = Observable.FromEventPattern(watcher, nameof(watcher.Changed))
                 .Sample(TimeSpan.FromMilliseconds(500))
@@ -33,12 +32,11 @@ namespace CmdWrapper.ConsoleApplication
             Console.WriteLine($"\nStart watching {tempDir}\n");
             watcher.EnableRaisingEvents = true;
 
-            var tempFile = Path.Combine(tempDir, Path.GetRandomFileName());
+            var tempFile = Path.Combine(tempDir, "command.txt");
             File.WriteAllText(tempFile, "echo hello");
             Thread.Sleep(1000);
             File.WriteAllText(tempFile, "hostname");
-            
-            Console.ReadKey();
+            Thread.Sleep(1000);
 
             Console.WriteLine($"Stop watching {tempDir}");
             disposable.Dispose();

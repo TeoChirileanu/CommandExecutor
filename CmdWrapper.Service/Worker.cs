@@ -2,64 +2,53 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Polly;
 
 namespace CmdWrapper.Service
 {
     public class Worker : BackgroundService
     {
-        private const string FolderToWatch = @"c:\tmp\watch";
+        private const string FolderToWatch = @"c:\tmp\watch\";
+        private const string FileToWatch = FolderToWatch + "command.txt";
         private readonly ILogger<Worker> _logger;
 
         public Worker(ILogger<Worker> logger) => _logger = logger;
 
-        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
+        protected override async Task ExecuteAsync(CancellationToken _)
         {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                CreateFolderToWatchIfNeeded();
-                _logger.LogInformation($"Watching {FolderToWatch}");
-                using var watcher = new FileSystemWatcher(FolderToWatch) {EnableRaisingEvents = true};
-                using var pipeline = Observable.FromEventPattern(watcher, nameof(watcher.Changed))
-                    .Sample(TimeSpan.FromMilliseconds(500))
-                    .Select(data => ((FileSystemEventArgs) data.EventArgs).FullPath)
-                    .Select(GetContentFromFile)
-                    .Switch()
-                    .Where(command => !string.IsNullOrWhiteSpace(command))
-                    .Do(command => _logger.LogInformation($">{command}"))
-                    .Select(ExecuteCommandAndGetResult)
-                    .Switch()
-                    .Subscribe(
-                        executionResult => _logger.LogInformation(executionResult),
-                        ex => _logger.LogError(ex, "Got an error"));
-                await Task.Delay(-1, cancellationToken);
-            }
+            Policy.Handle<Exception>()
+                .WaitAndRetryForever(
+                    sleepTime => TimeSpan.FromSeconds(sleepTime),
+                    (exception, __) => _logger.LogError(exception, exception.Message))
+                .Execute(Run);
+            
+            await Task.CompletedTask;
         }
 
-        private void CreateFolderToWatchIfNeeded()
+        private void Run()
         {
-            try { if (!Directory.Exists(FolderToWatch)) Directory.CreateDirectory(FolderToWatch); }
-            catch (Exception e) {_logger.LogError(e.ToString());}
-        }
-        
-        private static IObservable<string> GetContentFromFile(string file)
-        {
-            var subject = new BehaviorSubject<string>(string.Empty);
-            try { subject.OnNext(File.ReadAllText(file)); }
-            catch (Exception e) { subject.OnError(e); }
-            return subject.AsObservable();
-        }
-        
-        private static IObservable<string> ExecuteCommandAndGetResult(string command)
-        {
-            var subject = new BehaviorSubject<string>(string.Empty);
-            try { subject.OnNext(ExecuteCommand(command)); }
-            catch (Exception e) { subject.OnError(e); }
-            return subject.AsObservable();
+            if (!Directory.Exists(FolderToWatch)) Directory.CreateDirectory(FolderToWatch);
+            
+            _logger.LogInformation($"Watching {FolderToWatch} for {FileToWatch}");
+
+            var watcher = new FileSystemWatcher(FolderToWatch, FileToWatch);
+
+            Observable.FromEventPattern(watcher, nameof(watcher.Changed))
+                .Sample(TimeSpan.FromSeconds(1))
+                .Select(data => ((FileSystemEventArgs) data.EventArgs).FullPath)
+                .Select(commandFile => Observable.Return(File.ReadAllText(commandFile)))
+                .Switch()
+                .Where(command => !string.IsNullOrWhiteSpace(command))
+                .Do(command => _logger.LogInformation($">{command}"))
+                .Select(command => Observable.Return(ExecuteCommand(command)))
+                .Switch()
+                .Subscribe(executionResult => _logger.LogInformation(executionResult));
+
+            watcher.EnableRaisingEvents = true;
         }
 
         private static string ExecuteCommand(string command)
@@ -75,9 +64,7 @@ namespace CmdWrapper.Service
                 CreateNoWindow = true,
                 ErrorDialog = false
             };
-            var process = Process.Start(startInfo);
-            var output = process?.StandardOutput.ReadToEnd();
-            return output?.Trim();
+            return Process.Start(startInfo)?.StandardOutput.ReadToEnd().Trim();
         }
     }
 }
